@@ -1,21 +1,29 @@
-device: ipad_pro_13
-locales:
-  - locale: "en-US"
-    screenshots:
-      - id: "welcome_screen"
-        template: "default"
-        variables:
-          title: "Premium PNG Frames"
-          subtitle: "Use real hardware photos for maximum realism."
-          backgroundColor: "#1E88E5"
+rawScreenshotsPath: "example/raw_screenshots"
+devices:
+  - iphone_15_pro
+  - ipad_pro_13
 
-      - id: "2_device_frame"
-        template: "device_frame"
-        variables:
-          title: "iPhone 15 Pro"
-          subtitle: "Now using a real PNG frame asset."
-          gradientTop: "#F4EDDC"
-          gradientBottom: "#5FD1D3"
-          titleColor: "#1A8BD7"
-          subtitleColor: "#1B242D"
-          imagePath: "example/screenshots/screenshot_1.png"
+locales:
+  - en-US
+
+screens:
+  - id: "welcome_screen"
+    template: "default"
+    variables:
+      title:
+        en-US: "Premium PNG Frames"
+      subtitle:
+        en-US: "Use real hardware photos for maximum realism."
+      backgroundColor: "#1E88E5"
+
+  - id: "screenshot_1"
+    template: "device_frame"
+    variables:
+      title:
+        en-US: "iPhone 15 Pro & iPad"
+      subtitle:
+        en-US: "Now using a real PNG frame asset."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"

@@ -18,57 +18,53 @@ class ScreenshotConfig {
   }
 }
 
-class LocaleConfig {
-  final String locale;
-  final List<ScreenshotConfig> screenshots;
-
-  LocaleConfig({
-    required this.locale,
-    required this.screenshots,
-  });
-
-  factory LocaleConfig.fromJson(Map<String, dynamic> json) {
-    final screenshots = (json['screenshots'] as List<dynamic>?)?.map((s) => ScreenshotConfig.fromJson(Map<String, dynamic>.from(s))).toList() ?? [];
-    return LocaleConfig(
-      locale: json['locale'] as String,
-      screenshots: screenshots,
-    );
-  }
-}
-
 class ProjectConfig {
-  final List<LocaleConfig> locales;
+  final List<String> devices;
+  final List<String> locales;
+  final List<ScreenshotConfig> screens;
   final String? fontPath;
-  final String deviceId;
+  final String rawScreenshotsPath;
 
-  ProjectConfig({required this.locales, this.fontPath, this.deviceId = 'iphone_15_pro_max'});
+  ProjectConfig({
+    required this.devices,
+    required this.locales,
+    required this.screens,
+    this.fontPath,
+    this.rawScreenshotsPath = 'raw_screenshots',
+  });
   
   factory ProjectConfig.fromJson(Map<String, dynamic> json) {
-    final locales = (json['locales'] as List<dynamic>?)?.map((l) => LocaleConfig.fromJson(Map<String, dynamic>.from(l))).toList() ?? [];
+    final devices = (json['devices'] as List<dynamic>?)?.map((d) => d.toString()).toList() ?? [];
+    final locales = (json['locales'] as List<dynamic>?)?.map((l) => l.toString()).toList() ?? [];
+    final screens = (json['screens'] as List<dynamic>?)?.map((s) => ScreenshotConfig.fromJson(Map<String, dynamic>.from(s))).toList() ?? [];
+    
     return ProjectConfig(
-      locales: locales,
+      devices: devices.isNotEmpty ? devices : ['iphone_15_pro'], // fallback default
+      locales: locales.isNotEmpty ? locales : ['en-US'], // fallback default
+      screens: screens,
       fontPath: json['fontPath'] as String?,
-      deviceId: json['device'] as String? ?? 'iphone_15_pro_max',
+      rawScreenshotsPath: json['rawScreenshotsPath'] as String? ?? 'raw_screenshots',
     );
   }
 
   // A mock config for MVP
   static ProjectConfig get mock {
     return ProjectConfig(
-      locales: [
-        LocaleConfig(
-          locale: 'en-US',
-          screenshots: [
-            ScreenshotConfig(
-              id: '1',
-              templateName: 'default',
-              variables: {
-                'title': 'Welcome to our App!',
-                'subtitle': 'The best app on the store.',
-                'backgroundColor': '#FF3366',
-              },
-            ),
-          ],
+      devices: ['iphone_15_pro'],
+      locales: ['en-US'],
+      screens: [
+        ScreenshotConfig(
+          id: 'welcome_screen',
+          templateName: 'default',
+          variables: {
+            'title': {
+              'en-US': 'Welcome to our App!',
+            },
+            'subtitle': {
+              'en-US': 'The best app on the store.',
+            },
+            'backgroundColor': '#FF3366',
+          },
         ),
       ],
     );

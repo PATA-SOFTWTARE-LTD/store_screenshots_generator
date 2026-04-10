@@ -99,10 +99,6 @@ Future<void> main() async {
     print('Warning: Config not found or invalid. Using mock configuration.');
   }
 
-  // Determine device resolution
-  final device = DeviceRegistry.getById(config.deviceId);
-  final surfaceSize = device.resolution;
-
   // --- FONT LOADING ---
   String? fontFamily;
   final fontPath = config.fontPath ?? (Platform.isWindows ? 'C:/Windows/Fonts/arial.ttf' : null);
@@ -115,77 +111,97 @@ Future<void> main() async {
     print('Loaded font from: \$fontPath');
   }
 
-  for (final locale in config.locales) {
-    for (final screenshot in locale.screenshots) {
-      testWidgets('Generate screenshot \${screenshot.id} for \${locale.locale}', (WidgetTester tester) async {
-        // Apply font and device info to variables
-        final vars = Map<String, dynamic>.from(screenshot.variables);
-        if (fontFamily != null) vars['fontFamily'] = fontFamily;
-        vars['deviceId'] = config.deviceId;
+  for (final deviceId in config.devices) {
+    // Determine device resolution
+    final device = DeviceRegistry.getById(deviceId);
+    final surfaceSize = device.resolution;
 
-        tester.view.physicalSize = surfaceSize;
-        tester.view.devicePixelRatio = 1.0;
-        
-        addTearDown(() {
-          tester.view.resetPhysicalSize();
-          tester.view.resetDevicePixelRatio();
-        });
+    for (final locale in config.locales) {
+      for (final screen in config.screens) {
+        testWidgets('Generate screenshot \${screen.id} for \$locale on \$deviceId', (WidgetTester tester) async {
+          // Resolve localization for variables
+          final vars = <String, dynamic>{};
+          for (final entry in screen.variables.entries) {
+            if (entry.value is Map) {
+               // Extract the value for current locale
+               final mapVal = entry.value as Map;
+               vars[entry.key] = mapVal[locale] ?? mapVal.values.first; // fallback to first if locale not found
+            } else {
+               vars[entry.key] = entry.value;
+            }
+          }
+          
+          if (fontFamily != null) vars['fontFamily'] = fontFamily;
+          vars['deviceId'] = deviceId;
+          
+          final imagePath = '\${config.rawScreenshotsPath}/\$locale/\$deviceId/\${screen.id}.png';
+          vars['imagePath'] = imagePath;
 
-        final widget = TemplateRegistry.build(screenshot.templateName, vars);
-        final repaintBoundaryKey = GlobalKey();
+          tester.view.physicalSize = surfaceSize;
+          tester.view.devicePixelRatio = 1.0;
+          
+          addTearDown(() {
+            tester.view.resetPhysicalSize();
+            tester.view.resetDevicePixelRatio();
+          });
 
-        // Wrap in a layout builder to have a context for precaching
-        final app = Directionality(
-          textDirection: TextDirection.ltr,
-          child: MediaQuery(
-            data: MediaQueryData(size: surfaceSize),
-            child: RepaintBoundary(
-              key: repaintBoundaryKey,
-              child: SizedBox(
-                width: surfaceSize.width,
-                height: surfaceSize.height,
-                child: widget,
+          final widget = TemplateRegistry.build(screen.templateName, vars);
+          final repaintBoundaryKey = GlobalKey();
+
+          // Wrap in a layout builder to have a context for precaching
+          final app = Directionality(
+            textDirection: TextDirection.ltr,
+            child: MediaQuery(
+              data: MediaQueryData(size: surfaceSize),
+              child: RepaintBoundary(
+                key: repaintBoundaryKey,
+                child: SizedBox(
+                  width: surfaceSize.width,
+                  height: surfaceSize.height,
+                  child: widget,
+                ),
               ),
             ),
-          ),
-        );
+          );
 
-        // --- PRECACHE IMAGES ---
-        await tester.runAsync(() async {
-          await tester.pumpWidget(app);
+          // --- PRECACHE IMAGES ---
+          await tester.runAsync(() async {
+            await tester.pumpWidget(app);
+            
+            // Precache screenshot image
+            if (File(imagePath).existsSync()) {
+              final provider = FileImage(File(imagePath));
+              await precacheImage(provider, tester.element(find.byKey(repaintBoundaryKey)));
+            } else {
+              print('Warning: Raw screenshot not found at \$imagePath');
+            }
+
+            // Precache frame image
+            if (device.frameAsset != null && File(device.frameAsset!).existsSync()) {
+              final frameProvider = FileImage(File(device.frameAsset!));
+              await precacheImage(frameProvider, tester.element(find.byKey(repaintBoundaryKey)));
+            }
+          });
           
-          // Precache screenshot image
-          final imagePath = vars['imagePath'] as String?;
-          if (imagePath != null && File(imagePath).existsSync()) {
-            final provider = FileImage(File(imagePath));
-            await precacheImage(provider, tester.element(find.byKey(repaintBoundaryKey)));
-          }
-
-          // Precache frame image
-          if (device.frameAsset != null && File(device.frameAsset!).existsSync()) {
-            final frameProvider = FileImage(File(device.frameAsset!));
-            await precacheImage(frameProvider, tester.element(find.byKey(repaintBoundaryKey)));
-          }
-        });
-        
-        await tester.pumpAndSettle();
-        
-        // Capture image and write to disk outside the fake async zone
-        await tester.runAsync(() async {
-          final boundary = repaintBoundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-          final image = await boundary.toImage(pixelRatio: 1.0);
-          final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-          final uint8list = byteData!.buffer.asUint8List();
-          image.dispose();
-
-          final dir = Directory('output/\${locale.locale}');
-          if (!dir.existsSync()) dir.createSync(recursive: true);
+          await tester.pumpAndSettle();
           
-          final file = File('\${dir.path}/\${screenshot.id}.png');
-          await file.writeAsBytes(uint8list);
-          print('Exported: \${file.path}');
+          // Capture image and write to disk outside the fake async zone
+          await tester.runAsync(() async {
+            final boundary = repaintBoundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+            final image = await boundary.toImage(pixelRatio: 1.0);
+            final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+            final uint8list = byteData!.buffer.asUint8List();
+            image.dispose();
+
+            final dir = Directory('output/\$locale/\$deviceId');
+            if (!dir.existsSync()) dir.createSync(recursive: true);
+            
+            final file = File('\${dir.path}/\${screen.id}.png');
+            await file.writeAsBytes(uint8list);
+            print('Exported: \${file.path}');
+          });
         });
-      });
+      }
     }
   }
 }
