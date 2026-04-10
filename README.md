@@ -23,42 +23,61 @@ dev_dependencies:
 
 ## 🚀 Usage
 
-### 1. Create a Configuration File
-Create a `screenshots.yaml` file to define your screenshots and locales.
+### 1. Structure your Raw Screenshots
+By default, the tool expects your raw screenshots (e.g. from integration tests) to be organized as follows:
+`raw_screenshots/{locale}/{device_id}/{screen_id}.png`
+
+### 2. Create a Configuration File
+Create a `screenshots.yaml` file to define your devices, locales, and templates.
 
 ```yaml
+rawScreenshotsPath: "raw_screenshots" # Base path for raw images
 fontPath: "assets/fonts/Inter-Bold.ttf" # Optional: Custom branding
-locales:
-  - locale: "en-US"
-    screenshots:
-      - id: "welcome"
-        template: "default"
-        variables:
-          title: "Welcome to App"
-          subtitle: "The best experience on mobile"
-          backgroundColor: "#1E88E5"
 
-      - id: "device_promo"
-        template: "device_frame"
-        variables:
-          title: "Track Everything"
-          subtitle: "All your data in one place."
-          gradientTop: "#F4EDDC"
-          gradientBottom: "#5FD1D3"
-          imagePath: "output/en-US/welcome.png" # Recursive loading!
+devices:
+  - iphone_15_pro
+  - ipad_pro_13
+
+locales:
+  - en-US
+  - it-IT
+
+screens:
+  - id: "welcome"
+    template: "default"
+    variables:
+      title: 
+        en-US: "Welcome to App"
+        it-IT: "Benvenuto nell'App"
+      subtitle: 
+        en-US: "The best experience on mobile"
+        it-IT: "La migliore esperienza mobile"
+      backgroundColor: "#1E88E5"
+
+  - id: "device_promo"
+    template: "device_frame"
+    variables:
+      title: 
+        en-US: "Track Everything"
+        it-IT: "Traccia Tutto"
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      # The frame template will automatically fetch:
+      # raw_screenshots/{locale}/{device}/device_promo.png
 ```
 
-### 2. Run the Generator
+### 3. Run the Generator
 Execute the CLI tool pointing to your configuration:
 
 ```bash
 dart run store_screenshots_generator:generate -c path/to/screenshots.yaml
 ```
 
-### 3. Collect Output
-Check the `output/` directory (created automatically). Your assets will be organized by locale:
-- `output/en-US/welcome.png`
-- `output/en-US/device_promo.png`
+### 4. Collect Output
+Check the `output/` directory (created automatically). Your assets will be organized by locale and device:
+- `output/en-US/iphone_15_pro/welcome.png`
+- `output/en-US/ipad_pro_13/welcome.png`
+- `output/it-IT/iphone_15_pro/welcome.png`
 
 ## 🛠 Advanced Usage
 

@@ -96,7 +96,7 @@ Future<void> main() async {
     config = ProjectConfig.fromJson(jsonMap);
   } else {
     config = ProjectConfig.mock;
-    print('Warning: Config not found or invalid. Using mock configuration.');
+    print('\x1B[38;5;208mWarning: Config not found or invalid. Using mock configuration.\x1B[0m');
   }
 
   // --- FONT LOADING ---
@@ -173,7 +173,7 @@ Future<void> main() async {
               final provider = FileImage(File(imagePath));
               await precacheImage(provider, tester.element(find.byKey(repaintBoundaryKey)));
             } else {
-              print('Warning: Raw screenshot not found at \$imagePath');
+              print('\x1B[38;5;208mWarning: Raw screenshot not found at \$imagePath\x1B[0m');
             }
 
             // Precache frame image

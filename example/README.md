@@ -7,7 +7,7 @@ This folder contains a ready-to-use setup showcasing the core capabilities of th
 - **`screenshots.yaml`**: The main configuration file.
     - Demonstrates localized content for `en-US` and `it-IT`.
     - Showcases two templates: `default` (text-only) and `device_frame` (image within a phone frame).
-- **`screenshots/`**: Directory containing sample app screenshots to be wrapped inside device frames.
+- **`raw_screenshots/`**: Directory containing sample raw app screenshots to be wrapped inside device frames automatically matching locales and devices.
 
 ## 🚀 How to Run
 
@@ -26,12 +26,17 @@ The generator will process the config and create the following structure in the 
 ```text
 output/
 ├── en-US/
-│   ├── welcome_screen.png  (Simple layout)
-│   ├── stats_screen.png    (Simple layout)
-│   └── 2_device_frame.png  (Screenshot wrapped in a smartphone frame)
+│   ├── iphone_15_pro/
+│   │   ├── welcome_screen.png  (Simple layout)
+│   │   └── screenshot_1.png    (Screenshot wrapped in a smartphone frame)
+│   └── ipad_pro_13/
+│       ├── welcome_screen.png  (Simple layout)
+│       └── screenshot_1.png    (Screenshot wrapped in a tablet frame)
 └── it-IT/
-    ├── welcome_screen.png  (Localized Italian)
-    └── stats_screen.png    (Localized Italian)
+    ├── iphone_15_pro/
+    │   ├── welcome_screen.png  (Localized Italian)
+    │   └── screenshot_1.png    (Localized Italian)
+    ...
 ```
 
 ## 🪄 Key Features to Observe

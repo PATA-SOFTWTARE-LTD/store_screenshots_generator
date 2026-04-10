@@ -57,7 +57,12 @@ class DeviceRegistry {
       resolution: Size(1440, 3040),
       cornerRadius: 24.0,
       frameAsset: 'assets/frames/pixel_4_xl.png',
-      framePadding: EdgeInsets.only(top: 100.0, left: 60.0, right: 60.0),
+      framePadding: EdgeInsets.only(
+        left: 50.0,
+        right: 50.0,
+        top: 120.0,
+        bottom: 70.0,
+      ),
     ),
     'ipad_pro_13': DeviceSpec(
       id: 'ipad_pro_13',

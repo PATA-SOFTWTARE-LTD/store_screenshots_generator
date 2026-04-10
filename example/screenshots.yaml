@@ -2,27 +2,91 @@ rawScreenshotsPath: "example/raw_screenshots"
 devices:
   - iphone_15_pro
   - ipad_pro_13
+  - pixel_4_xl
 
 locales:
-  - en-US
+  - it-IT
 
 screens:
-  - id: "welcome_screen"
-    template: "default"
-    variables:
-      title:
-        en-US: "Premium PNG Frames"
-      subtitle:
-        en-US: "Use real hardware photos for maximum realism."
-      backgroundColor: "#1E88E5"
-
-  - id: "screenshot_1"
+  - id: "home_light"
     template: "device_frame"
     variables:
       title:
-        en-US: "iPhone 15 Pro & iPad"
+        it-IT: "Monitora la tua salute intestinale con chiarezza"
       subtitle:
-        en-US: "Now using a real PNG frame asset."
+        it-IT: "Registrazioni strutturate di evacuazioni, sintomi, alimentazione e idratazione."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "home_dark"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Monitoraggio completo e strutturato"
+      subtitle:
+        it-IT: "Registra le evacuazioni con parametri dettagliati e dati organizzati."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "insights_screen"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Individua schemi e correlazioni"
+      subtitle:
+        it-IT: "Comprendi come alimentazione, idratazione e sintomi influenzano il tuo intestino."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "export_pdf"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Esporta i Tuoi dati in PDF"
+      subtitle:
+        it-IT: "Genera documenti dei tuoi movimenti intestinali da consultare o condividere con il tuo dottore."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "reminder_screen"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Rimani idratato"
+      subtitle:
+        it-IT: "Imposta promemoria per medicine e assunzione di acqua."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "manage_data_screen"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Traccia Cibo, Medicine e Umore"
+      subtitle:
+        it-IT: "Gestisci tutte le informazioni importanti in un unico posto."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "last_screen"
+    template: "default"
+    variables:
+      title:
+        it-IT: "I Tuoi Dati,\nSolo Tuoi"
+      subtitle:
+        it-IT: "Blocca l'access con un PIN.\nEsporta e importa i tuoi dati quando vuoi.\n\nGoditi l'app senza pubblicità."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
