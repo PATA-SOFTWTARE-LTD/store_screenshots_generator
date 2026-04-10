@@ -33,7 +33,7 @@ class DeviceRegistry {
       resolution: Size(1179, 2556),
       cornerRadius: 55.0,
       frameAsset: 'assets/frames/iphone_15_pro.png',
-      framePadding: EdgeInsets.all(40.0),
+      framePadding: EdgeInsets.all(50.0),
     ),
     'iphone_13_pro_max': DeviceSpec(
       id: 'iphone_13_pro_max',

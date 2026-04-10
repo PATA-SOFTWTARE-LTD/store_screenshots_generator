@@ -14,7 +14,7 @@ class DeviceFrameTemplate extends StatelessWidget {
     final subtitle = variables['subtitle'] as String? ?? 'App Subtitle';
     final imagePath = variables['imagePath'] as String?;
     final fontFamily = variables['fontFamily'] as String?;
-    final deviceId = variables['deviceId'] as String? ?? 'iphone_15_pro_max';
+    final deviceId = variables['deviceId'] as String? ?? 'iphone_15_pro';
     
     final device = DeviceRegistry.getById(deviceId);
 
@@ -136,23 +136,38 @@ class DeviceFrameTemplate extends StatelessWidget {
       );
     }
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // Content
-        Padding(
-          padding: device.framePadding,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(device.cornerRadius),
-            child: innerScreen,
-          ),
+    // Calculate total logical dimensions including the frame padding
+    final totalWidth = device.resolution.width + device.framePadding.left + device.framePadding.right;
+    final totalHeight = device.resolution.height + device.framePadding.top + device.framePadding.bottom;
+
+    return FittedBox(
+      fit: BoxFit.contain,
+      child: SizedBox(
+        width: totalWidth,
+        height: totalHeight,
+        child: Stack(
+          children: [
+            // Content correctly positioned behind the frame
+            Positioned(
+              left: device.framePadding.left,
+              top: device.framePadding.top,
+              width: device.resolution.width,
+              height: device.resolution.height,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(device.cornerRadius),
+                child: innerScreen,
+              ),
+            ),
+            // Frame Image layered on top
+            Positioned.fill(
+              child: Image.file(
+                File(device.frameAsset!),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ],
         ),
-        // Frame Image
-        Image.file(
-          File(device.frameAsset!),
-          fit: BoxFit.contain,
-        ),
-      ],
+      ),
     );
   }
 

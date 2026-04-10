@@ -153,10 +153,18 @@ Future<void> main() async {
         // --- PRECACHE IMAGES ---
         await tester.runAsync(() async {
           await tester.pumpWidget(app);
+          
+          // Precache screenshot image
           final imagePath = vars['imagePath'] as String?;
           if (imagePath != null && File(imagePath).existsSync()) {
             final provider = FileImage(File(imagePath));
             await precacheImage(provider, tester.element(find.byKey(repaintBoundaryKey)));
+          }
+
+          // Precache frame image
+          if (device.frameAsset != null && File(device.frameAsset!).existsSync()) {
+            final frameProvider = FileImage(File(device.frameAsset!));
+            await precacheImage(frameProvider, tester.element(find.byKey(repaintBoundaryKey)));
           }
         });
         

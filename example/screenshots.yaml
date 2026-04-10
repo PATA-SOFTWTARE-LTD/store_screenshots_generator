@@ -1,4 +1,4 @@
-device: iphone_15_pro
+device: ipad_pro_13
 locales:
   - locale: "en-US"
     screenshots:
@@ -12,7 +12,7 @@ locales:
       - id: "2_device_frame"
         template: "device_frame"
         variables:
-          title: "iPhone 15 Pro Max"
+          title: "iPhone 15 Pro"
           subtitle: "Now using a real PNG frame asset."
           gradientTop: "#F4EDDC"
           gradientBottom: "#5FD1D3"
