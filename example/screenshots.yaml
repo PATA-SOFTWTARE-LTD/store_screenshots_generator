@@ -1,0 +1,21 @@
+device: iphone_15_pro
+locales:
+  - locale: "en-US"
+    screenshots:
+      - id: "welcome_screen"
+        template: "default"
+        variables:
+          title: "Premium PNG Frames"
+          subtitle: "Use real hardware photos for maximum realism."
+          backgroundColor: "#1E88E5"
+
+      - id: "2_device_frame"
+        template: "device_frame"
+        variables:
+          title: "iPhone 15 Pro Max"
+          subtitle: "Now using a real PNG frame asset."
+          gradientTop: "#F4EDDC"
+          gradientBottom: "#5FD1D3"
+          titleColor: "#1A8BD7"
+          subtitleColor: "#1B242D"
+          imagePath: "example/screenshots/screenshot_1.png"
