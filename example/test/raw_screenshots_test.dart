@@ -4,10 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:store_screenshots_generator/store_screenshots_generator.dart';
 import 'package:example/main.dart';
-import 'package:store_screenshots_generator/src/capture/raw_capturer.dart';
-import 'package:store_screenshots_generator/src/config/models/device_spec.dart';
-import 'package:store_screenshots_generator/src/widgets/fake_status_bar.dart';
 
 void main() {
   setUpAll(() async {
@@ -48,12 +46,10 @@ void main() {
       defaultValue: 'iphone_15_pro',
     );
     const locale = String.fromEnvironment('LOCALE', defaultValue: 'it-IT');
-
     const includeStatusBar = bool.fromEnvironment(
       'INCLUDE_STATUS_BAR',
       defaultValue: true,
     );
-    final isIOS = deviceId.startsWith('iphone') || deviceId.startsWith('ipad');
 
     // Recuperiamo le specifiche del device
     final device = DeviceRegistry.getById(deviceId);
@@ -76,47 +72,23 @@ void main() {
     tester.view.physicalSize = resolution;
     tester.view.devicePixelRatio = pixelRatio;
 
-    print('Logical Size: ${logicalSize.width}x${logicalSize.height}');
-
     // 2. Capture Home Light
     print('Capturing Home Light Screen...');
     final rootKey = GlobalKey();
     
-    // Costruiamo la radice includendo o meno la status bar finta
-    Widget appRoot = MyApp(locale: locale);
-    if (includeStatusBar) {
-      final topPadding = isIOS ? 47.0 : 24.0;
-      appRoot = Directionality(
-        textDirection: TextDirection.ltr,
-        child: MediaQuery(
-          data: MediaQueryData(
-            size: logicalSize,
-            devicePixelRatio: pixelRatio,
-            padding: EdgeInsets.only(top: topPadding),
-          ),
-          child: Stack(
-            children: [
-              appRoot,
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: FakeStatusBar(
-                  isIOS: isIOS,
-                  height: topPadding,
-                  contentColor: Colors.white, // Le AppBar in main.dart hanno testo bianco
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    // Utilizziamo lo ScreenshotScaffold che gestisce automaticamente:
+    // - MediaQuery (con safeArea corretta per il notch)
+    // - FakeStatusBar (con altezza adattiva)
+    // - RepaintBoundary
+    final appRoot = ScreenshotScaffold(
+      boundaryKey: rootKey,
+      device: device,
+      includeStatusBar: includeStatusBar,
+      statusBarContentColor: Colors.white,
+      child: MyApp(locale: locale),
+    );
 
-    await tester.pumpWidget(RepaintBoundary(
-      key: rootKey,
-      child: appRoot,
-    ));
+    await tester.pumpWidget(appRoot);
     await tester.pumpAndSettle();
 
     // Recuperiamo il contesto del Navigator per cambiare schermata

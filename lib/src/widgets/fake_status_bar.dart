@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../config/models/device_spec.dart';
 
 /// Un widget che simula la status bar nativa (iOS o Android)
 /// per la cattura degli screenshot.
@@ -7,6 +8,7 @@ class FakeStatusBar extends StatelessWidget {
   final String timeText;
   final Color contentColor;
   final double height;
+  final DeviceSpec? deviceSpec;
 
   const FakeStatusBar({
     super.key,
@@ -14,13 +16,32 @@ class FakeStatusBar extends StatelessWidget {
     this.timeText = '9:41',
     this.contentColor = Colors.black,
     this.height = 44.0,
+    this.deviceSpec,
   });
+
+  /// Crea una status bar ottimizzata per uno specifico dispositivo.
+  factory FakeStatusBar.forDevice(
+    DeviceSpec device, {
+    Color contentColor = Colors.black,
+    String timeText = '9:41',
+  }) {
+    final logicalTop = device.safeArea.top / device.pixelRatio;
+    return FakeStatusBar(
+      isIOS: device.id.startsWith('iphone') || device.id.startsWith('ipad'),
+      timeText: timeText,
+      contentColor: contentColor,
+      height: logicalTop > 0 ? logicalTop : 44.0,
+      deviceSpec: device,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: height,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: isIOS ? 32.0 : 16.0, // Più padding su iOS per allontanarsi dai bordi/angoli
+      ),
       child: isIOS ? _buildIOSStatusBar() : _buildAndroidStatusBar(),
     );
   }

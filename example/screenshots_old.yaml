@@ -37,7 +37,7 @@ screens:
       titleColor: "#1A8BD7"
       subtitleColor: "#1B242D"
 
-  - id: "insights"
+  - id: "insights_screen"
     template: "device_frame"
     variables:
       title:
@@ -46,6 +46,48 @@ screens:
       subtitle:
         it-IT: "Comprendi come alimentazione, idratazione e sintomi influenzano il tuo intestino."
         en-US: "Understand how diet, hydration, and symptoms affect your gut."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "export_pdf"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Esporta i Tuoi dati in PDF"
+        en-US: "Export Your data to PDF"
+      subtitle:
+        it-IT: "Genera documenti dei tuoi movimenti intestinali da consultare o condividere con il tuo dottore."
+        en-US: "Generate documents of your movements to consult or share with your doctor."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "reminder_screen"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Rimani idratato"
+        en-US: "Stay hydrated"
+      subtitle:
+        it-IT: "Imposta promemoria per medicine e assunzione di acqua."
+        en-US: "Set reminders for medicine and water intake."
+      gradientTop: "#F4EDDC"
+      gradientBottom: "#5FD1D3"
+      titleColor: "#1A8BD7"
+      subtitleColor: "#1B242D"
+
+  - id: "manage_data_screen"
+    template: "device_frame"
+    variables:
+      title:
+        it-IT: "Traccia Cibo, Medicine e Umore"
+        en-US: "Track Food, Meds and Mood"
+      subtitle:
+        it-IT: "Gestisci tutte le informazioni importanti in un unico posto."
+        en-US: "Manage all important information in one place."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"

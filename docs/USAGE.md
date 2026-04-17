@@ -79,46 +79,46 @@ Puoi includere o escludere una **Status Bar simulata** (che mostra l'orario 9:41
 dart run store_screenshots_generator:capture_raw --no-status-bar
 ```
 
-## 4. Gestione della Test UI e Status Bar
+## 4. Gestione della Test UI e ScreenshotScaffold
 
-Il tuo `raw_screenshots_test.dart` dovrebbe avvolgere l'app in un `RepaintBoundary` con una `Key` passata poi al metodo di cattura per isolare graficamente la tua app.
+Invece di gestire manualmente la `MediaQuery` e la `FakeStatusBar`, il tool mette a disposizione il widget `ScreenshotScaffold`. Questo widget configura automaticamente:
+- La **Safe Area** corretta in base al `deviceId` (notch, dynamic island, etc).
+- La **Status Bar simulata** con altezza adattiva.
+- Il **RepaintBoundary** necessario per la cattura.
 
-Se desideri avere la **Status Bar finta** (Opzione consigliata!), utilizza il flag di environment `INCLUDE_STATUS_BAR`:
+Esempio di utilizzo nel tuo `raw_screenshots_test.dart`:
 
 ```dart
     final rootKey = GlobalKey();
+    final device = DeviceRegistry.getById(deviceId);
     const includeStatusBar = bool.fromEnvironment('INCLUDE_STATUS_BAR', defaultValue: true);
     
-    Widget appRoot = const MyApp();
-    if (includeStatusBar) {
-      appRoot = Directionality(
-        textDirection: TextDirection.ltr,
-        child: Column(
-          children: [
-            FakeStatusBar(
-              isIOS: deviceId.startsWith('iphone') || deviceId.startsWith('ipad'),
-            ),
-            Expanded(child: appRoot),
-          ],
-        ),
-      );
-    }
+    // Lo scaffold gestisce logicamente tutto il setup del device
+    final appRoot = ScreenshotScaffold(
+      device: device,
+      includeStatusBar: includeStatusBar,
+      boundaryKey: rootKey,
+      statusBarContentColor: Colors.white, // Colore icone status bar
+      child: const MyApp(),
+    );
 
-    await tester.pumpWidget(RepaintBoundary(
-      key: rootKey,
-      child: appRoot,
-    ));
+    // Imposta la dimensione logica e fisica correttamente
+    final logicalSize = Size(device.resolution.width / device.pixelRatio, device.resolution.height / device.pixelRatio);
+    await tester.binding.setSurfaceSize(logicalSize);
+    tester.view.physicalSize = device.resolution;
+    tester.view.devicePixelRatio = device.pixelRatio;
 
+    await tester.pumpWidget(appRoot);
     await tester.pumpAndSettle();
 
     // ... navigazione ...
 
     await captureRawScreenshot(
       tester,
-      screenshotId: 'nome_screen',
+      screenshotId: 'home_screen',
       locale: locale,
       deviceId: deviceId,
-      boundaryKey: rootKey, // IMPORTANTE! Permette l'acquisizione corretta ignorando overlay
+      boundaryKey: rootKey,
     );
 ```
 
