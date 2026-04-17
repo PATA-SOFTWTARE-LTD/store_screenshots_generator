@@ -78,65 +78,68 @@ Future<void> main() async {
     final yamlString = configFile.readAsStringSync();
     final yamlMap = loadYaml(yamlString) as YamlMap;
     
-    Map<String, dynamic> convertYamlMap(YamlMap map) {
-      final Map<String, dynamic> result = {};
-      for (final key in map.keys) {
-        final value = map[key];
-        if (value is YamlMap) {
-          result[key.toString()] = convertYamlMap(value);
-        } else if (value is YamlList) {
-          result[key.toString()] = value.map((e) {
-            if (e is YamlMap) return convertYamlMap(e);
-            return e;
-          }).toList();
-        } else {
-          result[key.toString()] = value;
-        }
+    dynamic convertYamlMap(dynamic node) {
+      if (node is YamlMap) {
+        return node.map((key, value) => MapEntry(key.toString(), convertYamlMap(value)));
+      } else if (node is YamlList) {
+        return node.map(convertYamlMap).toList();
+      } else {
+        return node;
       }
-      return result;
     }
 
-    final jsonMap = convertYamlMap(yamlMap);
+    final jsonMap = convertYamlMap(yamlMap) as Map<String, dynamic>;
     config = ProjectConfig.fromJson(jsonMap);
   } else {
     config = ProjectConfig.mock;
     print('\x1B[38;5;208mWarning: Config not found or invalid. Using mock configuration.\x1B[0m');
   }
 
-  // --- FONT LOADING ---
-  String? fontFamily;
-  final fontPath = config.fontPath ?? (Platform.isWindows ? 'C:/Windows/Fonts/arial.ttf' : null);
-  if (fontPath != null && File(fontPath).existsSync()) {
-    fontFamily = 'CustomFont';
-    final fontData = File(fontPath).readAsBytesSync();
-    final loader = FontLoader(fontFamily);
-    loader.addFont(Future.value(fontData.buffer.asByteData()));
-    await loader.load();
-    print('Loaded font from: \$fontPath');
+  // --- MULTI-FONT LOADING ---
+  for (final font in config.fonts) {
+    if (File(font.path).existsSync()) {
+      final fontData = File(font.path).readAsBytesSync();
+      final loader = FontLoader(font.family);
+      loader.addFont(Future.value(fontData.buffer.asByteData()));
+      await loader.load();
+      print('Loaded font: \${font.family} from \${font.path}');
+    } else {
+       print('\x1B[31mError: Font file not found: \${font.path}\x1B[0m');
+    }
   }
 
   for (final deviceId in config.devices) {
-    // Determine device resolution
     final device = DeviceRegistry.getById(deviceId);
     final surfaceSize = device.resolution;
 
     for (final locale in config.locales) {
       for (final screen in config.screens) {
         testWidgets('Generate screenshot \${screen.id} for \$locale on \$deviceId', (WidgetTester tester) async {
-          // Resolve localization for variables
+          // Resolve variables: Global Theme + Screen specific
           final vars = <String, dynamic>{};
+          
+          // 1. Load Global Theme variables
+          for (final entry in config.theme.entries) {
+            if (entry.value is Map) {
+              final mapVal = entry.value as Map;
+              vars[entry.key] = mapVal[locale] ?? mapVal.values.first;
+            } else {
+              vars[entry.key] = entry.value;
+            }
+          }
+
+          // 2. Override with Screen specific variables
           for (final entry in screen.variables.entries) {
             if (entry.value is Map) {
-               // Extract the value for current locale
                final mapVal = entry.value as Map;
-               vars[entry.key] = mapVal[locale] ?? mapVal.values.first; // fallback to first if locale not found
+               vars[entry.key] = mapVal[locale] ?? mapVal.values.first;
             } else {
                vars[entry.key] = entry.value;
             }
           }
           
-          if (fontFamily != null) vars['fontFamily'] = fontFamily;
           vars['deviceId'] = deviceId;
+          vars['locale'] = locale;
           
           final imagePath = '\${config.rawScreenshotsPath}/\$locale/\$deviceId/\${screen.id}.png';
           vars['imagePath'] = imagePath;
@@ -152,7 +155,6 @@ Future<void> main() async {
           final widget = TemplateRegistry.build(screen.templateName, vars);
           final repaintBoundaryKey = GlobalKey();
 
-          // Wrap in a layout builder to have a context for precaching
           final app = Directionality(
             textDirection: TextDirection.ltr,
             child: MediaQuery(
@@ -168,7 +170,6 @@ Future<void> main() async {
             ),
           );
 
-          // --- PRECACHE IMAGES ---
           await tester.runAsync(() async {
             await tester.pumpWidget(app);
             
@@ -189,7 +190,6 @@ Future<void> main() async {
           
           await tester.pumpAndSettle();
           
-          // Capture image and write to disk outside the fake async zone
           await tester.runAsync(() async {
             final boundary = repaintBoundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
             final image = await boundary.toImage(pixelRatio: 1.0);

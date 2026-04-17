@@ -12,20 +12,26 @@ class SplitScreenTemplate extends StatelessWidget {
     final title = variables['title'] as String? ?? '';
     final subtitle = variables['subtitle'] as String? ?? '';
     final imagePath = variables['imagePath'] as String?;
-    final fontFamily = variables['fontFamily'] as String?;
     final deviceId = variables['deviceId'] as String? ?? 'iphone_15_pro';
     
+    // Theme values
+    final titleFont = variables['titleFont'] as String?;
+    final subtitleFont = variables['subtitleFont'] as String?;
+
     final device = DeviceRegistry.getById(deviceId);
 
-    Color parseColor(String? hex, Color fallback) {
-      if (hex == null || !hex.startsWith('#') || hex.length != 7) return fallback;
-      return Color(int.parse('FF${hex.substring(1)}', radix: 16));
+    Color parseColor(dynamic value, Color fallback) {
+      if (value is! String || !value.startsWith('#')) return fallback;
+      final hex = value.substring(1);
+      if (hex.length == 6) return Color(int.parse('FF$hex', radix: 16));
+      if (hex.length == 8) return Color(int.parse(hex, radix: 16));
+      return fallback;
     }
     
-    final backgroundColor1 = parseColor(variables['backgroundColor1'] as String?, const Color(0xFFF0F0F0));
-    final backgroundColor2 = parseColor(variables['backgroundColor2'] as String?, const Color(0xFF222222));
-    final titleColor = parseColor(variables['titleColor'] as String?, const Color(0xFF111111));
-    final subtitleColor = parseColor(variables['subtitleColor'] as String?, const Color(0xFF444444));
+    final color1 = parseColor(variables['gradientTop'] ?? variables['backgroundColor1'], const Color(0xFFF0F0F0));
+    final color2 = parseColor(variables['gradientBottom'] ?? variables['backgroundColor2'], const Color(0xFFE0E0E0));
+    final titleColor = parseColor(variables['titleColor'], const Color(0xFF111111));
+    final subtitleColor = parseColor(variables['subtitleColor'], const Color(0xFF444444));
 
     Widget innerScreen;
     if (imagePath != null && File(imagePath).existsSync()) {
@@ -35,40 +41,27 @@ class SplitScreenTemplate extends StatelessWidget {
         filterQuality: FilterQuality.high,
       );
     } else {
-      innerScreen = Container(
-        color: const Color(0xFFE0E0E0),
-        child: const Center(
-          child: Text('No Image', style: TextStyle(color: Color(0xFF888888))),
-        ),
-      );
+      innerScreen = Container(color: const Color(0xFFCCCCCC));
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
-          // Background 1 (Top Half)
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: MediaQuery.of(context).size.height / 2, // Non ideal, ma in headless questo widget ha accesso al size
-            child: Container(color: backgroundColor1),
-          ),
-          // Background 2 (Bottom Half)
-          Positioned(
-            left: 0,
-            right: 0,
-            top: MediaQuery.of(context).size.height / 2,
-            bottom: 0,
-            child: Container(color: backgroundColor2),
+          // Split Background
+          Column(
+            children: [
+              Expanded(child: Container(color: color1)),
+              Expanded(child: Container(color: color2)),
+            ],
           ),
           
+          // Content
           Column(
             children: [
               const SizedBox(height: 120),
               if (title.isNotEmpty || subtitle.isNotEmpty) ...[
-                 _buildTextHeader(title, subtitle, titleColor, subtitleColor, fontFamily),
+                 _buildTextHeader(title, subtitle, titleColor, subtitleColor, titleFont, subtitleFont),
                  const SizedBox(height: 60),
               ],
               Expanded(
@@ -85,7 +78,7 @@ class SplitScreenTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildTextHeader(String title, String subtitle, Color titleColor, Color subtitleColor, String? fontFamily) {
+  Widget _buildTextHeader(String title, String subtitle, Color titleColor, Color subtitleColor, String? titleFont, String? subtitleFont) {
     return Column(
       children: [
         if (title.isNotEmpty)
@@ -94,28 +87,27 @@ class SplitScreenTemplate extends StatelessWidget {
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 90,
+                fontSize: 88,
                 height: 1.1,
                 fontWeight: FontWeight.w900,
                 color: titleColor,
-                letterSpacing: -1.0,
-                fontFamily: fontFamily,
+                fontFamily: titleFont,
               ),
               textAlign: TextAlign.center,
             ),
           ),
         if (subtitle.isNotEmpty) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 64.0),
             child: Text(
               subtitle,
               style: TextStyle(
-                fontSize: 44,
+                fontSize: 40,
                 height: 1.3,
                 fontWeight: FontWeight.w500,
                 color: subtitleColor,
-                fontFamily: fontFamily,
+                fontFamily: subtitleFont,
               ),
               textAlign: TextAlign.center,
             ),
@@ -127,32 +119,6 @@ class SplitScreenTemplate extends StatelessWidget {
 
   Widget _buildFrame(DeviceSpec device, Widget innerScreen) {
     final frameExists = device.frameAsset != null && File(device.frameAsset!).existsSync();
-
-    if (!frameExists) {
-      return Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(device.cornerRadius),
-            border: Border.all(color: const Color(0xFF333333), width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x33000000),
-                blurRadius: 40,
-                offset: Offset(0, 0),
-              )
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(device.cornerRadius - 2),
-            child: AspectRatio(
-              aspectRatio: device.aspectRatio,
-              child: innerScreen,
-            ),
-          ),
-        ),
-      );
-    }
-
     final totalWidth = device.resolution.width + device.framePadding.left + device.framePadding.right;
     final totalHeight = device.resolution.height + device.framePadding.top + device.framePadding.bottom;
 
@@ -161,9 +127,9 @@ class SplitScreenTemplate extends StatelessWidget {
         decoration: const BoxDecoration(
           boxShadow: [
              BoxShadow(
-              color: Color(0x66000000),
-              blurRadius: 50,
-              offset: Offset(0, 10),
+              color: Color(0x33000000),
+              blurRadius: 40,
+              offset: Offset(0, 20),
             )
           ]
         ),
@@ -184,12 +150,22 @@ class SplitScreenTemplate extends StatelessWidget {
                     child: innerScreen,
                   ),
                 ),
-                Positioned.fill(
-                  child: Image.file(
-                    File(device.frameAsset!),
-                    fit: BoxFit.fill,
+                if (frameExists)
+                  Positioned.fill(
+                    child: Image.file(
+                      File(device.frameAsset!),
+                      fit: BoxFit.fill,
+                    ),
+                  )
+                else
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(device.cornerRadius),
+                        border: Border.all(color: const Color(0xFF444444), width: 8),
+                      ),
+                    ),
                   ),
-                ),
               ],
             ),
           ),

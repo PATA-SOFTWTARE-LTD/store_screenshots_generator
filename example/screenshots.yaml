@@ -8,6 +8,18 @@ locales:
   - it-IT
   - en-US
 
+fonts:
+  - family: "Inter"
+    path: "C:/Windows/Fonts/arial.ttf" # Temporary path for local test
+
+theme:
+  titleColor: "#1A8BD7"
+  subtitleColor: "#1B242D"
+  gradientTop: "#F4EDDC"
+  gradientBottom: "#5FD1D3"
+  titleFont: "Inter"
+  subtitleFont: "Inter"
+
 screens:
   - id: "home_light"
     template: "device_frame"
@@ -18,10 +30,6 @@ screens:
       subtitle:
         it-IT: "Registrazioni strutturate di evacuazioni, sintomi, alimentazione e idratazione."
         en-US: "Structured logs of bowel movements, symptoms, food, and hydration."
-      gradientTop: "#F4EDDC"
-      gradientBottom: "#5FD1D3"
-      titleColor: "#1A8BD7"
-      subtitleColor: "#1B242D"
 
   - id: "home_dark"
     template: "device_frame"
@@ -32,10 +40,6 @@ screens:
       subtitle:
         it-IT: "Registra le evacuazioni con parametri dettagliati e dati organizzati."
         en-US: "Log movements with detailed parameters and organized data."
-      gradientTop: "#F4EDDC"
-      gradientBottom: "#5FD1D3"
-      titleColor: "#1A8BD7"
-      subtitleColor: "#1B242D"
 
   - id: "insights"
     template: "device_frame"
@@ -46,10 +50,6 @@ screens:
       subtitle:
         it-IT: "Comprendi come alimentazione, idratazione e sintomi influenzano il tuo intestino."
         en-US: "Understand how diet, hydration, and symptoms affect your gut."
-      gradientTop: "#F4EDDC"
-      gradientBottom: "#5FD1D3"
-      titleColor: "#1A8BD7"
-      subtitleColor: "#1B242D"
 
   - id: "last_screen"
     template: "default"
@@ -60,7 +60,7 @@ screens:
       subtitle:
         it-IT: "Blocca l'access con un PIN.\nEsporta e importa i tuoi dati quando vuoi.\n\nGoditi l'app senza pubblicità."
         en-US: "Lock access with a PIN.\nExport and import your data anytime.\n\nEnjoy the app ad-free."
-      gradientTop: "#F4EDDC"
-      gradientBottom: "#5FD1D3"
-      titleColor: "#1A8BD7"
-      subtitleColor: "#1B242D"
+      gradientTop: "#5FD1D3"
+      gradientBottom: "#1A8BD7"
+      titleColor: "#F4EDDC"
+      subtitleColor: "#F4EDDC"

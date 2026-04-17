@@ -12,19 +12,25 @@ class SolidBackgroundTemplate extends StatelessWidget {
     final title = variables['title'] as String? ?? '';
     final subtitle = variables['subtitle'] as String? ?? '';
     final imagePath = variables['imagePath'] as String?;
-    final fontFamily = variables['fontFamily'] as String?;
     final deviceId = variables['deviceId'] as String? ?? 'iphone_15_pro';
     
+    // Theme/Font overrides
+    final titleFont = variables['titleFont'] as String?;
+    final subtitleFont = variables['subtitleFont'] as String?;
+
     final device = DeviceRegistry.getById(deviceId);
 
-    Color parseColor(String? hex, Color fallback) {
-      if (hex == null || !hex.startsWith('#') || hex.length != 7) return fallback;
-      return Color(int.parse('FF${hex.substring(1)}', radix: 16));
+    Color parseColor(dynamic value, Color fallback) {
+      if (value is! String || !value.startsWith('#')) return fallback;
+      final hex = value.substring(1);
+      if (hex.length == 6) return Color(int.parse('FF$hex', radix: 16));
+      if (hex.length == 8) return Color(int.parse(hex, radix: 16));
+      return fallback;
     }
     
-    final backgroundColor = parseColor(variables['backgroundColor'] as String?, const Color(0xFFF0F0F0));
-    final titleColor = parseColor(variables['titleColor'] as String?, const Color(0xFF111111));
-    final subtitleColor = parseColor(variables['subtitleColor'] as String?, const Color(0xFF444444));
+    final backgroundColor = parseColor(variables['backgroundColor'], const Color(0xFFF0F0F0));
+    final titleColor = parseColor(variables['titleColor'], const Color(0xFF111111));
+    final subtitleColor = parseColor(variables['subtitleColor'], const Color(0xFF444444));
 
     Widget innerScreen;
     if (imagePath != null && File(imagePath).existsSync()) {
@@ -50,7 +56,7 @@ class SolidBackgroundTemplate extends StatelessWidget {
           children: [
             const SizedBox(height: 140),
             if (title.isNotEmpty || subtitle.isNotEmpty) ...[
-               _buildTextHeader(title, subtitle, titleColor, subtitleColor, fontFamily),
+               _buildTextHeader(title, subtitle, titleColor, subtitleColor, titleFont, subtitleFont),
                const SizedBox(height: 80),
             ],
             Expanded(
@@ -66,7 +72,7 @@ class SolidBackgroundTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildTextHeader(String title, String subtitle, Color titleColor, Color subtitleColor, String? fontFamily) {
+  Widget _buildTextHeader(String title, String subtitle, Color titleColor, Color subtitleColor, String? titleFont, String? subtitleFont) {
     return Column(
       children: [
         if (title.isNotEmpty)
@@ -80,7 +86,7 @@ class SolidBackgroundTemplate extends StatelessWidget {
                 fontWeight: FontWeight.w900,
                 color: titleColor,
                 letterSpacing: -1.5,
-                fontFamily: fontFamily,
+                fontFamily: titleFont,
               ),
               textAlign: TextAlign.center,
             ),
@@ -96,7 +102,7 @@ class SolidBackgroundTemplate extends StatelessWidget {
                 height: 1.3,
                 fontWeight: FontWeight.w500,
                 color: subtitleColor,
-                fontFamily: fontFamily,
+                fontFamily: subtitleFont,
               ),
               textAlign: TextAlign.center,
             ),
@@ -156,14 +162,14 @@ class SolidBackgroundTemplate extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned(
-                  left: device.framePadding.left,
-                  top: device.framePadding.top,
-                  width: device.resolution.width,
-                  height: device.resolution.height,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(device.cornerRadius),
-                    child: innerScreen,
-                  ),
+                   left: device.framePadding.left,
+                   top: device.framePadding.top,
+                   width: device.resolution.width,
+                   height: device.resolution.height,
+                   child: ClipRRect(
+                     borderRadius: BorderRadius.circular(device.cornerRadius),
+                     child: innerScreen,
+                   ),
                 ),
                 Positioned.fill(
                   child: Image.file(

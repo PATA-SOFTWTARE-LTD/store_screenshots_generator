@@ -18,18 +18,34 @@ class ScreenshotConfig {
   }
 }
 
+class FontConfig {
+  final String family;
+  final String path;
+
+  FontConfig({required this.family, required this.path});
+
+  factory FontConfig.fromJson(Map<String, dynamic> json) {
+    return FontConfig(
+      family: json['family'] as String,
+      path: json['path'] as String,
+    );
+  }
+}
+
 class ProjectConfig {
   final List<String> devices;
   final List<String> locales;
   final List<ScreenshotConfig> screens;
-  final String? fontPath;
+  final List<FontConfig> fonts;
+  final Map<String, dynamic> theme;
   final String rawScreenshotsPath;
 
   ProjectConfig({
     required this.devices,
     required this.locales,
     required this.screens,
-    this.fontPath,
+    this.fonts = const [],
+    this.theme = const {},
     this.rawScreenshotsPath = 'raw_screenshots',
   });
   
@@ -37,12 +53,14 @@ class ProjectConfig {
     final devices = (json['devices'] as List<dynamic>?)?.map((d) => d.toString()).toList() ?? [];
     final locales = (json['locales'] as List<dynamic>?)?.map((l) => l.toString()).toList() ?? [];
     final screens = (json['screens'] as List<dynamic>?)?.map((s) => ScreenshotConfig.fromJson(Map<String, dynamic>.from(s))).toList() ?? [];
+    final fonts = (json['fonts'] as List<dynamic>?)?.map((f) => FontConfig.fromJson(Map<String, dynamic>.from(f))).toList() ?? [];
     
     return ProjectConfig(
       devices: devices.isNotEmpty ? devices : ['iphone_15_pro'], // fallback default
       locales: locales.isNotEmpty ? locales : ['en-US'], // fallback default
       screens: screens,
-      fontPath: json['fontPath'] as String?,
+      fonts: fonts,
+      theme: json['theme'] as Map<String, dynamic>? ?? {},
       rawScreenshotsPath: json['rawScreenshotsPath'] as String? ?? 'raw_screenshots',
     );
   }

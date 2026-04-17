@@ -122,7 +122,67 @@ Esempio di utilizzo nel tuo `raw_screenshots_test.dart`:
     );
 ```
 
-## 5. Dove vengono salvati?
+## 6. Generazione Finale (Framing)
 
-Le immagini raw vengono posizionate automaticamente in una sottocartella come da tua indicazione nel config (`rawScreenshotsPath`), usualmente `raw_screenshots/<locale>/<device_id>/<screen_nome>.png`. 
-Tali cartelle sono già ignorate nel `.gitignore` di default.
+Dopo aver acquisito gli screenshot raw, puoi generare le versioni finali con frame, titoli e sfondi utilizzando il comando `generate`.
+
+```bash
+dart run store_screenshots_generator:generate -c <percorso_yaml>
+```
+
+Se sei nella root dell'esempio:
+```bash
+dart run store_screenshots_generator:generate -c example/screenshots.yaml
+```
+
+### Configurazione `screenshots.yaml` avanzata
+
+Il file di configurazione ora supporta una sezione globale per il **tema** e la registrazione di **font personalizzati**.
+
+```yaml
+# Configurazione Font (opzionale)
+# I font devono essere presenti nel sistema (es. .ttf)
+fonts:
+  - family: "Inter"
+    path: "assets/fonts/Inter-VariableFont_slnt,wght.ttf"
+
+# Tema Globale (opzionale)
+# I valori qui definiti vengono usati da tutti i template come default
+theme:
+  titleColor: "#FFFFFF"       # Colore testo titolo (Hex)
+  subtitleColor: "#E0E0E0"    # Colore testo sottotitolo
+  titleFont: "Inter"         # FontFamily registrata sopra o di sistema
+  subtitleFont: "Inter"
+  gradientTop: "#1A237E"      # Colore alto dello sfondo (Sfumatura o Solido)
+  gradientBottom: "#121212"   # Colore basso dello sfondo
+
+# Definizione Screenshot
+screenshots:
+  - id: "home_light"
+    template: "device_frame" # default, device_frame, solid_background, split_screen
+    variables:
+      # Variabili localizzate (verranno risolte in base alla lingua)
+      title:
+        it-IT: "Gestione Semplice"
+        en-US: "Easy Management"
+      subtitle:
+        it-IT: "Traccia tutte le tue attività"
+        en-US: "Track all your activities"
+      # Variabili locali (sovrascrivono il tema globale per questa specifica schermata)
+      gradientTop: "#D32F2F" 
+```
+
+### Template Supportati
+
+1. **`default`**: Sfondo sfumato, titolo in alto, screenshot con bordo arrotondato e ombra.
+2. **`device_frame`**: Caricamento di un bezel hardware reale (se disponibile in `DeviceRegistry`).
+3. **`solid_background`**: Sfondo a tinta unita (o gradiente piatto) con screenshot centrato.
+4. **`split_screen`**: Applica due colori di sfondo distinti (top/bottom) per un effetto dinamico.
+
+### Localizzazione delle Variabili
+
+Il sistema di rendering risolve automaticamente le variabili in base alla gerarchia:
+1. Variabile localizzata specifica (es. `title.it-IT`).
+2. Variabile locale non localizzata (es. `gradientTop: "#FF0000"`).
+3. Variabile definita nel `theme` globale.
+4. Valore di fallback del template (HARDCODED).
