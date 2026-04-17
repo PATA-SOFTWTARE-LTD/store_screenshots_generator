@@ -53,3 +53,4 @@ The project generates marketing screenshots for mobile app stores directly from 
     - Incorrect physical size set in `WidgetTester`.
     - Asynchonous loading not being awaited with `tester.pumpAndSettle()`.
 - **CLI Changes**: Modify `lib/src/cli/command_runner.dart` to add new flags or options.
+- **Documentation**: EVERY time a new feature or command-line option is added, you MUST update `docs/USAGE.md` to reflect the changes.

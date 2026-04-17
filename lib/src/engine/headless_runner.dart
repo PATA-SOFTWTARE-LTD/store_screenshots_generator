@@ -59,11 +59,15 @@ import 'package:store_screenshots_generator/src/config/models/screenshot_config.
 import 'package:store_screenshots_generator/src/registry/template_registry.dart';
 import 'package:store_screenshots_generator/src/registry/templates/default_template.dart';
 import 'package:store_screenshots_generator/src/registry/templates/device_frame_template.dart';
+import 'package:store_screenshots_generator/src/registry/templates/solid_background_template.dart';
+import 'package:store_screenshots_generator/src/registry/templates/split_screen_template.dart';
 
 Future<void> main() async {
   // Manual registration for the test environment
   TemplateRegistry.register('default', defaultTemplate);
   TemplateRegistry.register('device_frame', deviceFrameTemplate);
+  TemplateRegistry.register('solid_background', solidBackgroundTemplate);
+  TemplateRegistry.register('split_screen', splitScreenTemplate);
   
   // Load actual config
   final configPath = '$targetConfigPath';

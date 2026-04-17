@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+  "appTitle": "Store Screenshots Demo",
+  "homeLight": "Home Light",
+  "homeDark": "Home Dark",
+  "insights": "Insights",
+  "healthTracking": "Health Tracking",
+  "everythingInCheck": "Everything in check!",
+  "trackSymptoms": "Track your symptoms, nutrition and hydration every day easily.",
+  "nightMode": "Night Mode",
+  "nightDesign": "An elegant dark design that is easy on your eyes, perfect for evening logs.",
+  "weeklyTrend": "Weekly Trend",
+  "topCorrelations": "Top Correlations",
+  "junkFood": "Junk Food",
+  "junkFoodSub": "Often linked to bloating.",
+  "optimalHydration": "Optimal Hydration",
+  "optimalHydrationSub": "Improves general digestion.",
+  "exportPdf": "Export PDF",
+  "reminders": "Reminders",
+  "manageData": "Manage Data",
+  "settingsPrivacy": "Settings & Privacy"
+}

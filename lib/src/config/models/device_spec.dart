@@ -1,10 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
 class DeviceSpec {
   final String id;
   final String name;
   final Size resolution;
+  final double pixelRatio;
   final double cornerRadius;
 
   /// Path to a PNG frame asset.
@@ -17,6 +17,7 @@ class DeviceSpec {
     required this.id,
     required this.name,
     required this.resolution,
+    this.pixelRatio = 3.0,
     this.cornerRadius = 40.0,
     this.frameAsset,
     this.framePadding = EdgeInsets.zero,
@@ -31,6 +32,7 @@ class DeviceRegistry {
       id: 'iphone_15_pro',
       name: 'iPhone 15 Pro',
       resolution: Size(1179, 2556),
+      pixelRatio: 3.0,
       cornerRadius: 55.0,
       frameAsset: 'assets/frames/iphone_15_pro.png',
       framePadding: EdgeInsets.all(50.0),
@@ -39,6 +41,7 @@ class DeviceRegistry {
       id: 'iphone_13_pro_max',
       name: 'iPhone 13 Pro Max',
       resolution: Size(1284, 2778),
+      pixelRatio: 3.0,
       cornerRadius: 50.0,
       frameAsset: 'assets/frames/iphone_13_pro_max.png',
       framePadding: EdgeInsets.all(38.0),
@@ -47,6 +50,7 @@ class DeviceRegistry {
       id: 'pixel_8_pro',
       name: 'Google Pixel 8 Pro',
       resolution: Size(1344, 2992),
+      pixelRatio: 3.5,
       cornerRadius: 45.0,
       frameAsset: 'assets/frames/pixel_8_pro.png',
       framePadding: EdgeInsets.all(32.0),
@@ -55,6 +59,7 @@ class DeviceRegistry {
       id: 'pixel_4_xl',
       name: 'Google Pixel 4 XL',
       resolution: Size(1440, 3040),
+      pixelRatio: 3.5,
       cornerRadius: 24.0,
       frameAsset: 'assets/frames/pixel_4_xl.png',
       framePadding: EdgeInsets.only(
@@ -68,6 +73,7 @@ class DeviceRegistry {
       id: 'ipad_pro_13',
       name: 'iPad Pro 13-inch',
       resolution: Size(2064, 2752),
+      pixelRatio: 2.0,
       cornerRadius: 30.0,
       frameAsset: 'assets/frames/ipad_pro_13.png',
       framePadding: EdgeInsets.all(40.0),

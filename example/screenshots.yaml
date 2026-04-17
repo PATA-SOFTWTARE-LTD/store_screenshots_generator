@@ -6,6 +6,7 @@ devices:
 
 locales:
   - it-IT
+  - en-US
 
 screens:
   - id: "home_light"
@@ -13,8 +14,10 @@ screens:
     variables:
       title:
         it-IT: "Monitora la tua salute intestinale con chiarezza"
+        en-US: "Monitor your gut health with clarity"
       subtitle:
         it-IT: "Registrazioni strutturate di evacuazioni, sintomi, alimentazione e idratazione."
+        en-US: "Structured logs of bowel movements, symptoms, food, and hydration."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
@@ -25,8 +28,10 @@ screens:
     variables:
       title:
         it-IT: "Monitoraggio completo e strutturato"
+        en-US: "Complete and structured monitoring"
       subtitle:
         it-IT: "Registra le evacuazioni con parametri dettagliati e dati organizzati."
+        en-US: "Log movements with detailed parameters and organized data."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
@@ -37,8 +42,10 @@ screens:
     variables:
       title:
         it-IT: "Individua schemi e correlazioni"
+        en-US: "Spot patterns and correlations"
       subtitle:
         it-IT: "Comprendi come alimentazione, idratazione e sintomi influenzano il tuo intestino."
+        en-US: "Understand how diet, hydration, and symptoms affect your gut."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
@@ -49,8 +56,10 @@ screens:
     variables:
       title:
         it-IT: "Esporta i Tuoi dati in PDF"
+        en-US: "Export Your data to PDF"
       subtitle:
         it-IT: "Genera documenti dei tuoi movimenti intestinali da consultare o condividere con il tuo dottore."
+        en-US: "Generate documents of your movements to consult or share with your doctor."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
@@ -61,8 +70,10 @@ screens:
     variables:
       title:
         it-IT: "Rimani idratato"
+        en-US: "Stay hydrated"
       subtitle:
         it-IT: "Imposta promemoria per medicine e assunzione di acqua."
+        en-US: "Set reminders for medicine and water intake."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
@@ -73,8 +84,10 @@ screens:
     variables:
       title:
         it-IT: "Traccia Cibo, Medicine e Umore"
+        en-US: "Track Food, Meds and Mood"
       subtitle:
         it-IT: "Gestisci tutte le informazioni importanti in un unico posto."
+        en-US: "Manage all important information in one place."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
@@ -85,8 +98,10 @@ screens:
     variables:
       title:
         it-IT: "I Tuoi Dati,\nSolo Tuoi"
+        en-US: "Your Data,\nOnly Yours"
       subtitle:
         it-IT: "Blocca l'access con un PIN.\nEsporta e importa i tuoi dati quando vuoi.\n\nGoditi l'app senza pubblicità."
+        en-US: "Lock access with a PIN.\nExport and import your data anytime.\n\nEnjoy the app ad-free."
       gradientTop: "#F4EDDC"
       gradientBottom: "#5FD1D3"
       titleColor: "#1A8BD7"
