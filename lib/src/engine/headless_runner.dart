@@ -57,6 +57,9 @@ import 'package:yaml/yaml.dart';
 import 'package:store_screenshots_generator/src/config/models/device_spec.dart';
 import 'package:store_screenshots_generator/src/config/models/screenshot_config.dart';
 import 'package:store_screenshots_generator/src/registry/template_registry.dart';
+import 'package:store_screenshots_generator/src/registry/template_context.dart';
+import 'package:store_screenshots_generator/src/registry/templates/blocks/blocks.dart';
+import 'package:store_screenshots_generator/src/registry/templates/layouts/layouts.dart';
 import 'package:store_screenshots_generator/src/registry/templates/default_template.dart';
 import 'package:store_screenshots_generator/src/registry/templates/device_frame_template.dart';
 import 'package:store_screenshots_generator/src/registry/templates/solid_background_template.dart';
@@ -152,7 +155,13 @@ Future<void> main() async {
             tester.view.resetDevicePixelRatio();
           });
 
-          final widget = TemplateRegistry.build(screen.templateName, vars);
+          final templateContext = TemplateContext(
+            variables: vars,
+            device: device,
+            imagePath: imagePath,
+            locale: locale,
+          );
+          final widget = TemplateRegistry.build(screen.templateName, templateContext);
           final repaintBoundaryKey = GlobalKey();
 
           final app = Directionality(

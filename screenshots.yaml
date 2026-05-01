@@ -1,0 +1,35 @@
+# screenshots.yaml
+locales:
+  - en-US
+devices:
+  - iphone_15_pro
+
+screens:
+  - id: welcome_screen
+    template: default
+    variables:
+      title: "Welcome to App"
+      subtitle: "The best app ever"
+
+  - id: solid_bg
+    template: solid_background
+    variables:
+      title: "Solid Colors"
+      subtitle: "Are great"
+      backgroundColor: "#FF0000"
+
+  - id: split_screen
+    template: split_screen
+    variables:
+      title: "Split Screen"
+      subtitle: "Two colors"
+      backgroundColor1: "#00FF00"
+      backgroundColor2: "#0000FF"
+
+  - id: device_frame
+    template: device_frame
+    variables:
+      title: "Device Frame"
+      subtitle: "With cool gradient"
+      gradientTop: "#FF00FF"
+      gradientBottom: "#00FFFF"

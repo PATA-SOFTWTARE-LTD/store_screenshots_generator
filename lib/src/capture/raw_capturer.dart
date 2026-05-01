@@ -1,8 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Cattura il Widget radice attualmente processato in formato PNG.
@@ -37,9 +38,7 @@ Future<void> captureRawScreenshot(
 
   if (boundary == null) {
     throw Exception(
-      'No RenderRepaintBoundary found in the widget tree' + 
-      (boundaryKey != null ? ' with key $boundaryKey.' : '.') +
-      ' Please wrap your widget in a RepaintBoundary.',
+      'No RenderRepaintBoundary found in the widget tree${boundaryKey != null ? ' with key $boundaryKey.' : '.'} Please wrap your widget in a RepaintBoundary.',
     );
   }
 

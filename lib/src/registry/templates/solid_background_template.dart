@@ -1,191 +1,52 @@
-import 'dart:io';
 import 'package:flutter/widgets.dart';
-import '../../config/models/device_spec.dart';
+import '../template_context.dart';
+import 'blocks/blocks.dart';
+import 'layouts/layouts.dart';
 
-class SolidBackgroundTemplate extends StatelessWidget {
-  final Map<String, dynamic> variables;
+Widget solidBackgroundTemplate(TemplateContext context) {
+  final hasImage = context.imagePath != null;
 
-  const SolidBackgroundTemplate({super.key, required this.variables});
-
-  @override
-  Widget build(BuildContext context) {
-    final title = variables['title'] as String? ?? '';
-    final subtitle = variables['subtitle'] as String? ?? '';
-    final imagePath = variables['imagePath'] as String?;
-    final deviceId = variables['deviceId'] as String? ?? 'iphone_15_pro';
-    
-    // Theme/Font overrides
-    final titleFont = variables['titleFont'] as String?;
-    final subtitleFont = variables['subtitleFont'] as String?;
-
-    final device = DeviceRegistry.getById(deviceId);
-
-    Color parseColor(dynamic value, Color fallback) {
-      if (value is! String || !value.startsWith('#')) return fallback;
-      final hex = value.substring(1);
-      if (hex.length == 6) return Color(int.parse('FF$hex', radix: 16));
-      if (hex.length == 8) return Color(int.parse(hex, radix: 16));
-      return fallback;
-    }
-    
-    final backgroundColor = parseColor(variables['backgroundColor'], const Color(0xFFF0F0F0));
-    final titleColor = parseColor(variables['titleColor'], const Color(0xFF111111));
-    final subtitleColor = parseColor(variables['subtitleColor'], const Color(0xFF444444));
-
-    Widget innerScreen;
-    if (imagePath != null && File(imagePath).existsSync()) {
-      innerScreen = Image.file(
-        File(imagePath),
-        fit: BoxFit.cover,
-        filterQuality: FilterQuality.high,
-      );
-    } else {
-      innerScreen = Container(
-        color: const Color(0xFFE0E0E0),
-        child: const Center(
-          child: Text('No Image', style: TextStyle(color: Color(0xFF888888))),
-        ),
-      );
-    }
-
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Container(
-        color: backgroundColor,
-        child: Column(
-          children: [
-            const SizedBox(height: 140),
-            if (title.isNotEmpty || subtitle.isNotEmpty) ...[
-               _buildTextHeader(title, subtitle, titleColor, subtitleColor, titleFont, subtitleFont),
-               const SizedBox(height: 80),
-            ],
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 100.0),
-                child: _buildFrame(device, innerScreen),
+  return StoreBackground(
+    context: context,
+    fallbackBgColor: const Color(0xFFF0F0F0),
+    child: TopTextLayout(
+      textPaddingTop: 140.0,
+      spacing: 32.0,
+      devicePadding: const EdgeInsets.only(left: 100.0, right: 100.0, bottom: 60.0),
+      title: context.string('title').isNotEmpty 
+        ? StoreText(
+            text: context.string('title'),
+            context: context,
+            styleKey: 'title',
+            defaultFontSize: 96,
+            defaultFontWeight: FontWeight.w900,
+            defaultColor: const Color(0xFF111111),
+          )
+        : const SizedBox.shrink(),
+      subtitle: context.string('subtitle').isNotEmpty
+        ? StoreText(
+            text: context.string('subtitle'),
+            context: context,
+            styleKey: 'subtitle',
+            defaultFontSize: 48,
+            defaultFontWeight: FontWeight.w500,
+            defaultColor: const Color(0xFF444444),
+          )
+        : const SizedBox.shrink(),
+      deviceMockup: hasImage
+          ? Container(
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x44000000),
+                    blurRadius: 40,
+                    offset: Offset(0, 30),
+                  )
+                ],
               ),
-            ),
-            const SizedBox(height: 60), // bottom margin
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextHeader(String title, String subtitle, Color titleColor, Color subtitleColor, String? titleFont, String? subtitleFont) {
-    return Column(
-      children: [
-        if (title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48.0),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 96,
-                height: 1.1,
-                fontWeight: FontWeight.w900,
-                color: titleColor,
-                letterSpacing: -1.5,
-                fontFamily: titleFont,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        if (subtitle.isNotEmpty) ...[
-          const SizedBox(height: 32),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 64.0),
-            child: Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 48,
-                height: 1.3,
-                fontWeight: FontWeight.w500,
-                color: subtitleColor,
-                fontFamily: subtitleFont,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ]
-      ],
-    );
-  }
-
-  Widget _buildFrame(DeviceSpec device, Widget innerScreen) {
-    final frameExists = device.frameAsset != null && File(device.frameAsset!).existsSync();
-
-    if (!frameExists) {
-      return Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(device.cornerRadius),
-            border: Border.all(color: const Color(0xFF333333), width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x33000000),
-                blurRadius: 30,
-                offset: Offset(0, 20),
-              )
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(device.cornerRadius - 2),
-            child: AspectRatio(
-              aspectRatio: device.aspectRatio,
-              child: innerScreen,
-            ),
-          ),
-        ),
-      );
-    }
-
-    final totalWidth = device.resolution.width + device.framePadding.left + device.framePadding.right;
-    final totalHeight = device.resolution.height + device.framePadding.top + device.framePadding.bottom;
-
-    return Center(
-      child: Container(
-        decoration: const BoxDecoration(
-          boxShadow: [
-             BoxShadow(
-              color: Color(0x44000000),
-              blurRadius: 40,
-              offset: Offset(0, 30),
+              child: DeviceMockup.fromContext(context),
             )
-          ]
-        ),
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: SizedBox(
-            width: totalWidth,
-            height: totalHeight,
-            child: Stack(
-              children: [
-                Positioned(
-                   left: device.framePadding.left,
-                   top: device.framePadding.top,
-                   width: device.resolution.width,
-                   height: device.resolution.height,
-                   child: ClipRRect(
-                     borderRadius: BorderRadius.circular(device.cornerRadius),
-                     child: innerScreen,
-                   ),
-                ),
-                Positioned.fill(
-                  child: Image.file(
-                    File(device.frameAsset!),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Widget solidBackgroundTemplate(Map<String, dynamic> variables) {
-  return SolidBackgroundTemplate(variables: variables);
+          : null,
+    ),
+  );
 }

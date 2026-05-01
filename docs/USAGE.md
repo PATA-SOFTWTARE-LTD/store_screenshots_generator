@@ -157,7 +157,7 @@ theme:
   gradientBottom: "#121212"   # Colore basso dello sfondo
 
 # Definizione Screenshot
-screenshots:
+screens:
   - id: "home_light"
     template: "device_frame" # default, device_frame, solid_background, split_screen
     variables:

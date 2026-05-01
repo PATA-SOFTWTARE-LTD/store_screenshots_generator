@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'template_context.dart';
 
-typedef TemplateBuilder = Widget Function(Map<String, dynamic> variables);
+typedef TemplateBuilder = Widget Function(TemplateContext context);
 
 class TemplateRegistry {
   static final Map<String, TemplateBuilder> _templates = {};
@@ -9,11 +10,11 @@ class TemplateRegistry {
     _templates[name] = builder;
   }
 
-  static Widget build(String name, Map<String, dynamic> variables) {
+  static Widget build(String name, TemplateContext context) {
     final builder = _templates[name];
     if (builder == null) {
       throw Exception('Template "$name" not found in registry. Did you forget to register it?');
     }
-    return builder(variables);
+    return builder(context);
   }
 }
