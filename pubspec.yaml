@@ -1,0 +1,50 @@
+name: store_screenshots_generator
+description: >-
+  Generate localized App Store and Google Play screenshots from Flutter widgets
+  without emulators. Capture raw screens, design in Layout Studio, export for CI.
+version: 0.3.0
+homepage: https://github.com/PATA-SOFTWTARE-LTD/store_screenshots_generator
+repository: https://github.com/PATA-SOFTWTARE-LTD/store_screenshots_generator
+issue_tracker: https://github.com/PATA-SOFTWTARE-LTD/store_screenshots_generator/issues
+topics:
+  - screenshots
+  - app-store
+  - google-play
+  - flutter
+  - testing
+
+environment:
+  sdk: ^3.10.7
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  args: ^2.7.0
+  yaml: ^3.1.3
+  # Required at runtime: capture_raw and export_store_screenshots run inside
+  # flutter test (see lib/src/capture/). Host apps depend on this package as a
+  # dev_dependency and import the test runner from their store tests.
+  flutter_test:
+    sdk: flutter
+
+executables:
+  init: init
+  capture_raw: capture_raw
+  export_store_screenshots: export_store_screenshots
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - assets/frames/
+    - assets/fonts/
+
+  fonts:
+    - family: StatusBarRoboto
+      fonts:
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-SemiBold.ttf
+          weight: 600

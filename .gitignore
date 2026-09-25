@@ -1,0 +1,42 @@
+# Dart / Flutter
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+*.iml
+.idea/
+doc/api/
+
+# FVM
+.fvm/
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Capture / export trees (never commit demo media)
+/raw_screenshots/
+/store_screenshots/
+/output/
+example/raw_screenshots/
+example/store_screenshots/
+example/store_screenshots_assets/
+example/output/
+
+# Platform generated plugin registrants
+**/GeneratedPluginRegistrant.*
+**/generated_plugin_registrant.*
+**/generated_plugins.cmake
+**/Flutter/ephemeral/
+**/flutter/ephemeral/
+
+# Secrets
+*.jks
+**/key.properties
+**/local.properties

@@ -1,0 +1,22 @@
+{
+  "@@locale": "it",
+  "appTitle": "Demo Screenshots Store",
+  "homeLight": "Schermata Home Chiaro",
+  "homeDark": "Schermata Home Scuro",
+  "insights": "Schermata Analisi",
+  "healthTracking": "Monitoraggio Salute",
+  "everythingInCheck": "Tutto sotto controllo!",
+  "trackSymptoms": "Registra i tuoi sintomi, alimentazione e idratazione ogni giorno in modo semplice.",
+  "nightMode": "Modalità Notturna",
+  "nightDesign": "Un design scuro elegante e riposante per i tuoi occhi, perfetto per le registrazioni serali.",
+  "weeklyTrend": "Andamento Settimanale",
+  "topCorrelations": "Correlazioni Principali",
+  "junkFood": "Cibo Spazzatura",
+  "junkFoodSub": "Spesso associato a gonfiore.",
+  "optimalHydration": "Idratazione Ottimale",
+  "optimalHydrationSub": "Migliora la digestione generale.",
+  "exportPdf": "Esporta PDF",
+  "reminders": "Promemoria",
+  "manageData": "Gestione Dati",
+  "settingsPrivacy": "Impostazioni e Privacy"
+}

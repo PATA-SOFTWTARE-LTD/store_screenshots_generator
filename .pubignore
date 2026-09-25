@@ -1,0 +1,34 @@
+# Local Flutter SDK pin
+.fvm/
+.fvmrc
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Build / tool output
+**/build/
+**/.dart_tool/
+**/coverage/
+**/.packages
+
+# Never ship capture / export / demo media
+example/raw_screenshots/
+example/store_screenshots/
+example/store_screenshots_assets/
+example/output/
+example/**/*.png
+example/**/*.jpg
+example/**/*.jpeg
+example/**/*.webp
+example/android/
+example/ios/
+example/linux/
+example/macos/
+example/windows/
+example/web/
+
+# Noise
+.cursor/
+*.log

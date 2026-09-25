@@ -1,0 +1,11 @@
+# Technical scope for capture tests and export loops (no store slots here).
+rawScreenshotsPath: raw_screenshots
+statusBar: dark
+
+devices:
+  - iphone_15_pro
+  - pixel_8
+
+locales:
+  - it-IT
+  - en-US
