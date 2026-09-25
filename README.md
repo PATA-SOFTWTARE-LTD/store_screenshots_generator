@@ -24,7 +24,7 @@ Generate localized App Store and Google Play screenshots from Flutter widgets â€
 dev_dependencies:
   store_screenshots_generator:
     git:
-      url: https://github.com/PATA-SOFTWTARE-LTD/store_screenshots_generator.git
+      url: https://github.com/PATA-SOFTWARE-LTD/store_screenshots_generator.git
       ref: v0.3.0
 ```
 
